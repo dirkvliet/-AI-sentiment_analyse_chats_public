@@ -564,6 +564,7 @@ demo = {
           timeStamp.replace('GMT', '')
           $('#last_time_sync').text(timeStamp)
           $('#status').text(actualObject)
+          $("#sync").prop('disabled', data.running)
       }
 
       setInterval(
@@ -574,8 +575,7 @@ demo = {
       );
 
       $("#sync").click(function () {
-
-
+          $("#sync").prop('disabled', true);
           $.ajax({
               type: 'GET',
               url: 'http://127.0.0.1:5000/updatedatabase',

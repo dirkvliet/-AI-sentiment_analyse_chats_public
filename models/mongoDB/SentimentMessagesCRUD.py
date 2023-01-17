@@ -206,14 +206,14 @@ class SentimentMessagesCRUD():
             return 
         if not sentimentMessage.date: 
             raise Exception("sentimentMessage has no date")
-            return 
-        if sentimentMessage.sentiment == 0: 
-            raise Exception("sentimentMessage has no sentiment")
-            return 
+            return  
 
+        sentimentmessagecheck = run.SentimentMessages.objects(date=sentimentMessage.date, sentiment = sentimentMessage.sentiment, chatId = sentimentMessage.chatId).first()
        
-        #if run.Message.objects(messageId=message.messageId).first():
-         #   return
+        if sentimentmessagecheck:
+            print(sentimentmessagecheck.to_json())
+            sentimentMessage._id = sentimentmessagecheck._id
+            return sentimentMessage.save(update=True)
 
         sentimentMessage.save()
         return sentimentMessage
@@ -231,16 +231,15 @@ class SentimentMessagesCRUD():
         if not sentimentMessage.date: 
             raise Exception("sentimentMessage has no date")
             return 
-        if sentimentMessage.prediction == 0: 
-            raise Exception("sentimentMessage has no prediction")
-            return
-
-        sentimentMessageCheck = run.SentimentMessages.objects(id=id).first()
+        sentimentMessageCheck = run.SentimentMessages.objects(_id=sentimentMessage._id).first()
         #chat doesn't exsist
         if not sentimentMessageCheck:
             return
         else:
-            sentimentMessage.update(sentiment=sentimentMessage.sentiment, chatId=sentimentMessage.chatId, date=sentimentMessage.date, mostUsedCombinationOfWords=sentimentMessage.mostUsedCombinationOfWords, number = sentimentMessage.number)
+            sentimentMessageCheck.update(set__sentiment=sentimentMessage.sentiment, set__chatId=sentimentMessage.chatId, set__date=sentimentMessage.date,
+                                   set__mostUsedVerb=sentimentMessage.mostUsedVerb, set__mostUsedCombinationOfWords=sentimentMessage.mostUsedCombinationOfWords,
+                                   set__mostUsedPlaces=sentimentMessage.mostUsedPlaces, set__mostUsedEntities=sentimentMessage.mostUsedEntities,
+                                   set__number = sentimentMessage.number)
         return sentimentMessage
 
     def delete(self, sentimentMessage):

@@ -39,10 +39,10 @@ class DataCleaner:
         parameter dataframe to clean 
         returns same dataframe with cleaned column
         """
-        if 'Message' not in dataframe.columns:
+        if 'message' not in dataframe.columns:
             raise Exception("column Message doesn't exist in given dataframe")
         for i in range(len(dataframe)):
-            dataframe.loc[i : i, "Message"] = self.strip_all_entities(self.strip_links(self.strip_read_tweet(clean(dataframe.loc[i, "Message"], lower=False, no_emoji=True))))
+            dataframe.loc[i : i, "message"] = self.strip_all_entities(self.strip_links(self.strip_read_tweet(clean(dataframe.loc[i, "message"], lower=False, no_emoji=True))))
         return dataframe
  
         
@@ -108,5 +108,29 @@ class DataCleaner:
         returns dataframe without empty cells and space cells in Message column
         """
         dataframe = dataframe.replace(r'^s*$', float('NaN'), regex = True)  # Replace blanks by NaN
-        dataframe.dropna(subset=['Message'], inplace=True)     
+        dataframe.dropna(subset=['message'], inplace=True)     
         return dataframe
+
+    
+    def getOrderedDescCombinations(self, data):
+        """
+        function to get from list distinct values ordered by how many times they are in the list
+        parameter array of data in format str
+        return distinct list ordered bij num counts
+        """
+
+        unique_list = []
+        for x in data:
+            if unique_list.count(str(x)) < 1:
+                unique_list.append(str(x))
+
+        numofitem = []
+        for item in unique_list:
+            countof = len(list(filter(lambda x: str(x) == item, data)))
+            numofitem.append([countof, item])
+        sortedlist = sorted(numofitem, key=lambda x: x[0], reverse=True)
+        return sortedlist
+        #onlylabels = []
+       # for item in sortedlist:
+         #   onlylabels.append(item[1])
+       # return onlylabels

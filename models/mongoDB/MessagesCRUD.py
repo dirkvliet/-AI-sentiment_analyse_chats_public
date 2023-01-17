@@ -159,9 +159,10 @@ class MessagesCRUD():
             raise Exception("message has no date")
             return 
 
-        #if run.Message.objects(messageId=message.messageId).first():
-        #    return
-
+        messagescheck = run.Messages.objects(date=message.date, chatId = message.chatId).first()
+        if messagescheck:
+            message._id = messagescheck._id
+            return message.save(update=True)
         message.save()
         return message
 
@@ -176,12 +177,12 @@ class MessagesCRUD():
             raise Exception("message has no date")
             return 
 
-        messageCheck = run.SentimentMessages.objects(id=id).first()
-        #chat doesn't exsist
+        messageCheck = run.Messages.objects(_id=message._id).first()
+        #messages doesn't exsist
         if not messageCheck:
             return
         else:
-            message.update(chatId=run.SentimentMessages.chatId, date=run.SentimentMessages.date, mostUsedCombinationOfWords=run.SentimentMessages.mostUsedCombinationOfWords, number = run.SentimentMessages.number)
+            messageCheck.update()
         return message
 
     def delete(self, message):

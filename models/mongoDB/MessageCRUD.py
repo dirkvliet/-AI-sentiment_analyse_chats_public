@@ -186,8 +186,12 @@ class MessageCRUD():
             raise Exception("message has no userId")
             return 
 
-        if run.Message.objects(messageId=message.messageId).first():
+
+        messagecheck = run.Message.objects(messageId=message.messageId).first()
+        if messagecheck:
             return
+           # message._id = messagecheck._id
+          #  return self.update(message)
 
         message.save()
         return message
@@ -220,7 +224,8 @@ class MessageCRUD():
         if not messageCheck:
             return
         else:
-            message.update(message=message.message,  chatId=message.chatId, date=message.date, prediction=message.prediction, userId=message.userId)
+            print(message.to_json())
+            message.update(set__message=message.message,  set__chatId=message.chatId, set__date=message.date, set__prediction=message.prediction, set__userId=message.userId)
         return message
 
     def delete(self, message):

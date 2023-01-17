@@ -1,10 +1,11 @@
 import run
+from datetime import datetime, timedelta
 
 class SyncDBCRUD():
     def getLatest(self):
         syncDB = run.SyncDB.objects().first()
         if not syncDB:
-            return None
+            return run.SyncDB(timeStamp = datetime.now(), running = False, actualObject = "first time")
         else:
             return syncDB
 

@@ -16,11 +16,11 @@ class TelegramApi:
         api_id = "29174514"
         api_hash = "29b50f7a27be60a0f959c1ad2ba17341"
         phone_number = "+31625564723"
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
+        self.loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(self.loop)
         self.client  = TelegramClient('Jan Hoovense.session',
                                 api_id,
-                                api_hash, loop=loop, sequential_updates=True)
+                                api_hash, loop=self.loop, sequential_updates=True)
         self.client.connect()
 
         # get all chats
@@ -95,11 +95,12 @@ class TelegramApi:
             0    | 22-06-22T18:06:54.0000  | tetstwtstftf wercwddcdrwsffg
         """
         dfN = pd.DataFrame(columns=['id', 'date', 'message', 'userId'])    
-        for iterator in messages:
-                userid = -1
-                if(type(iterator.from_id) == PeerUser):
-                    userid = iterator.from_id.user_id
-                dfN.loc [len(dfN.id)] = [iterator.id, iterator.date.strftime('%Y-%m-%dT%H:%M:%S.%f'), iterator.text, userid] 
+        if messages:
+            for iterator in messages:
+                    userid = -1
+                    if(type(iterator.from_id) == PeerUser):
+                        userid = iterator.from_id.user_id
+                    dfN.loc [len(dfN.id)] = [iterator.id, iterator.date.strftime('%Y-%m-%dT%H:%M:%S.%f'), iterator.text, userid] 
         return dfN
 
     def getUserbyId(self, userids):
@@ -117,14 +118,9 @@ class TelegramApi:
                 users.append(run.User(userId = id,name = "unknown"))
         return users
         
-    
-
-    async def disconnectclient(self):
-        await self.client.disconnect()
 
     def __del__(self):
-        """
-        destructer of TelegramApi
-        """
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(self.disconnectclient())
+        print("object delete")
+        self.loop.stop()
+        asyncio.run(self.client.disconnect())
+        print("object deleted")

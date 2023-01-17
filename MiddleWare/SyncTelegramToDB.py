@@ -43,6 +43,7 @@ class SyncTelegramToDB:
     def updateMessageFromOffsetDate(self, offsetDate, chatId):
         messages = self.api.get_messages_from_offsetdate(offsetDate, chatId)
         dataframe = self.api.messageResponseToDataFrame(messages)
+        print(dataframe.columns)
         table = self.datacleaner.dropmissingMessages(self.datacleaner.cleanDataFrame(dataframe))
  
         if not table.empty:
@@ -161,10 +162,11 @@ class SyncTelegramToDB:
         syncDBRepo = SyncDBCRUD()
         latestDBUpdate = syncDBRepo.getLatest()
         latestDBUpdate.actualObject = "update chats"
+        latestDBUpdate.running = True
         syncDBRepo.update(latestDBUpdate);
         self.updateChats()
         chats = self.chatrepo.getAll()
-        syncdate = datetime.now()
+        syncdate = datetime.now().replace(microsecond=0)
         for count in range(0,len(chats)):
             latestDBUpdate = syncDBRepo.getLatest()
             latestDBUpdate.actualObject = "update message from chat " + chats[count].name
@@ -190,5 +192,7 @@ class SyncTelegramToDB:
         latestDBUpdate.running = False
         latestDBUpdate.actualObject = "database synchronisatie completed"
         syncDBRepo.update(latestDBUpdate);
+
+
 
    

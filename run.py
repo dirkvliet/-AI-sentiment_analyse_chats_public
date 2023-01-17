@@ -50,6 +50,7 @@ class Chat(mongodb.Document):
                 "name": self.name}
 
 class Message(mongodb.Document):
+    _id = mongodb.ObjectIdField()
     messageId = mongodb.IntField()
     date = mongodb.DateTimeField()
     message = mongodb.StringField()
@@ -58,7 +59,9 @@ class Message(mongodb.Document):
     userId = mongodb.IntField()
 
     def to_json(self):
-        return {"messageId": self.messageId,
+        return {
+            "_id": self._id,
+            "messageId": self.messageId,
                 "message": self.message,
                 "date": self.date,
                 "chatId": self.chatId,
@@ -78,6 +81,7 @@ class SyncDB(mongodb.Document):
                 }
 
 class SentimentMessages(mongodb.Document):
+    _id = mongodb.ObjectIdField()
     sentiment = mongodb.IntField()
     number  = mongodb.IntField()
     chatId = mongodb.IntField()
@@ -89,6 +93,7 @@ class SentimentMessages(mongodb.Document):
 
     def to_json(self):
         return {
+                "_id": self._id,
                 "sentiment": self.sentiment,
                 "number": self.number,
                 "chatId": self.chatId,
@@ -118,6 +123,7 @@ class User(mongodb.Document):
 
 
 class Messages(mongodb.Document):
+    _id = mongodb.ObjectIdField()
     number  = mongodb.IntField()
     chatId = mongodb.IntField()
     date = mongodb.DateTimeField()
@@ -128,6 +134,7 @@ class Messages(mongodb.Document):
 
     def to_json(self):
         return {
+                "_id": self._id,
                 "number": self.number,
                 "chatId": self.chatId,
                 "date": self.date.strftime('%Y-%m-%dT%H:00:00.000Z'),

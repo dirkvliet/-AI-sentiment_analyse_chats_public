@@ -33,7 +33,7 @@ def updatedatabase():
 
         syncDB = SyncDB(timeStamp = datetime.now(), running = True, actualObject="running")
         syncDBRepo.add(syncDB);
-        asyncio.run(sync.syncToDB())
+        sync.syncToDB()
         
         return syncDBRepo.getLatest().to_json()
 
